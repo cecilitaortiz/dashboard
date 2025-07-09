@@ -8,9 +8,23 @@ import ChartUI from './components/ChartUI';
 import './App.css'
 //npnimport React from 'react';
 import { Grid, Typography, CircularProgress } from '@mui/material';
+import { useState } from 'react';
 
 function App() {
-  const dataFetcherOutput = DataFetcher();
+  const [coordinates, setCoordinates] = useState({ 
+    latitude: -0.2298, 
+    longitude: -78.5249 
+  });
+  
+  const [selectedCityName, setSelectedCityName] = useState<string>('Quito');
+
+  const { data, loading, error } = DataFetcher(coordinates);
+
+  const handleCityChange = (newCoordinates: { latitude: number; longitude: number }, cityName: string) => {
+    setCoordinates(newCoordinates);
+    setSelectedCityName(cityName);
+    console.log(`Ciudad seleccionada: ${cityName}`, newCoordinates); // Para debug
+  };
 
   return (
     <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -27,66 +41,69 @@ function App() {
 
       {/* Selector */}
       <Grid size={{ xs: 12, md: 3 }}>
-        <SelectorUI />
+        <SelectorUI onCityChange={handleCityChange} />
+        <Typography variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
+          Ciudad actual: {selectedCityName}
+        </Typography>
       </Grid>
 
       {/* Indicadores */}
       <Grid container size={{ xs: 12, md: 9 }} >
 
         {/* Mostrar estado de carga */}
-        {dataFetcherOutput.loading && (
+        {loading && (
           <Grid size={{ xs: 12 }} textAlign="center">
             <CircularProgress />
             <Typography variant="h6" sx={{ mt: 2 }}>
-              Cargando datos del clima...
+              Cargando datos del clima para {selectedCityName}...
             </Typography>
           </Grid>
         )}
 
         {/* Mostrar error si existe */}
-        {dataFetcherOutput.error && !dataFetcherOutput.loading && (
+        {error && !loading && (
           <Grid size={{ xs: 12 }} textAlign="center">
             <Typography variant="h6" color="error">
-              Error: {dataFetcherOutput.error}
+              Error al cargar datos para {selectedCityName}: {error}
             </Typography>
           </Grid>
         )}
 
         {/* Mostrar datos si están disponibles */}
-        {dataFetcherOutput.data && !dataFetcherOutput.loading && !dataFetcherOutput.error && (
+        {data && !loading && !error && (
           <>
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI
                 title='Temperatura (2m)'
-              description={dataFetcherOutput.data.current?.temperature_2m ? `${dataFetcherOutput.data.current.temperature_2m}°C` : '--°C'} 
+              description={data.current?.temperature_2m ? `${data.current.temperature_2m}°C` : '--°C'} 
               />
             </Grid>
 
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI
                 title='Temperatura aparente'
-              description={dataFetcherOutput.data.current?.apparent_temperature ? `${dataFetcherOutput.data.current.apparent_temperature}°C` : '--°C'} 
+              description={data.current?.apparent_temperature ? `${data.current.apparent_temperature}°C` : '--°C'} 
               />
             </Grid>
 
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI
                 title='Velocidad del viento'
-              description={dataFetcherOutput.data.current?.wind_speed_10m ? `${dataFetcherOutput.data.current.wind_speed_10m}km/h` : '--km/h'} 
+              description={data.current?.wind_speed_10m ? `${data.current.wind_speed_10m}km/h` : '--km/h'} 
               />
             </Grid>
 
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI
                 title='Humedad relativa'
-              description={dataFetcherOutput.data.current?.relative_humidity_2m ? `${dataFetcherOutput.data.current.relative_humidity_2m}%` : '--%'} 
+              description={data.current?.relative_humidity_2m ? `${data.current.relative_humidity_2m}%` : '--%'} 
               />
             </Grid>
           </>
         )}
 
         {/* Fallback: mostrar indicadores vacíos si no hay datos */}
-        {!dataFetcherOutput.data && !dataFetcherOutput.loading && !dataFetcherOutput.error && (
+        {!data && !loading && !error && (
           <>
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI title='Temperatura (2m)' description='--°C' />
@@ -111,16 +128,23 @@ function App() {
       {/* Gráfico */}
       <Grid
         sx={{ display: { xs: "none", md: "block" } }} >
-        <ChartUI data={dataFetcherOutput.data} />
+        <ChartUI data={data} />
       </Grid>
 
       {/* Tabla */}
       <Grid sx={{ display: { xs: "none", md: "block" } }}>
-        <TableUI data={dataFetcherOutput.data} />
+        <TableUI data={data} />
       </Grid>
 
       {/* Información adicional */}
-      <Grid>Elemento: Información adicional</Grid>
+      <Grid>
+        <Typography variant="body1">
+          Mostrando datos del clima para: {selectedCityName}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Lat: {coordinates.latitude.toFixed(4)}, Lon: {coordinates.longitude.toFixed(4)}
+        </Typography>
+      </Grid>
 
     </Grid>
   );

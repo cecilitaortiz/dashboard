@@ -7,7 +7,12 @@ interface DataFetcherOutput {
     error: string | null;
 }
 
-export default function DataFetcher() : DataFetcherOutput {
+interface DataFetcherProps {
+  latitude: number;
+  longitude: number;
+}
+
+export default function DataFetcher({ latitude, longitude }: DataFetcherProps): DataFetcherOutput {
 
     const [data, setData] = useState<OpenMeteoResponse | null>(null);
     const [loading, setLoading] = useState(true);
@@ -15,8 +20,7 @@ export default function DataFetcher() : DataFetcherOutput {
 
     useEffect(() => {
 
-        // URL actualizada para obtener datos actuales (current) además de hourly
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=-1.25&longitude=-78.25&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&timezone=America%2FChicago`
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&timezone=America%2FChicago`
 
         const fetchData = async () => {
 
@@ -46,7 +50,7 @@ export default function DataFetcher() : DataFetcherOutput {
 
         fetchData();
 
-    }, []); // El array vacío asegura que el efecto se ejecute solo una vez después del primer renderizado
+    }, [latitude, longitude]); // Re-ejecutar cuando cambien las coordenadas
 
     return { data, loading, error };
 
