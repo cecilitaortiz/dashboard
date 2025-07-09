@@ -57,28 +57,28 @@ function App() {
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI 
                 title='Temperatura (2m)' 
-                description={dataFetcherOutput.data.current?.temperature_2m ? `${dataFetcherOutput.data.current.temperature_2m}°C` : '--°C'} 
+               // description={dataFetcherOutput.data.current?.temperature_2m ? `${dataFetcherOutput.data.current.temperature_2m}°C` : '--°C'} 
               />
             </Grid>
 
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI 
                 title='Temperatura aparente' 
-                description={dataFetcherOutput.data.current?.apparent_temperature ? `${dataFetcherOutput.data.current.apparent_temperature}°C` : '--°C'} 
+               // description={dataFetcherOutput.data.current?.apparent_temperature ? `${dataFetcherOutput.data.current.apparent_temperature}°C` : '--°C'} 
               />
             </Grid>
 
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI 
                 title='Velocidad del viento' 
-                description={dataFetcherOutput.data.current?.wind_speed_10m ? `${dataFetcherOutput.data.current.wind_speed_10m}km/h` : '--km/h'} 
+                //description={dataFetcherOutput.data.current?.wind_speed_10m ? `${dataFetcherOutput.data.current.wind_speed_10m}km/h` : '--km/h'} 
               />
             </Grid>
 
             <Grid size={{ xs: 12, md: 3 }}>
               <IndicatorUI 
                 title='Humedad relativa' 
-                description={dataFetcherOutput.data.current?.relative_humidity_2m ? `${dataFetcherOutput.data.current.relative_humidity_2m}%` : '--%'} 
+                //description={dataFetcherOutput.data.current?.relative_humidity_2m ? `${dataFetcherOutput.data.current.relative_humidity_2m}%` : '--%'} 
               />
             </Grid>
           </>
