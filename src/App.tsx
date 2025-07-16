@@ -5,6 +5,7 @@ import IndicatorUI from './components/IndicatorUI';
 import DataFetcher from './functions/DataFetcher';
 import TableUI from './components/TableUI';
 import ChartUI from './components/ChartUI';
+import CohereAssistantUI from './components/CohereAssistantUI';
 import './App.css'
 //npnimport React from 'react';
 import { Grid, Typography, CircularProgress } from '@mui/material';
@@ -144,6 +145,15 @@ function App() {
         <Typography variant="body2" color="text.secondary">
           Lat: {coordinates.latitude.toFixed(4)}, Lon: {coordinates.longitude.toFixed(4)}
         </Typography>
+      </Grid>
+
+      {/* Cohere Assistant - Movido al final y más pequeño */}
+      <Grid size={{ xs: 12, md: 4 }}>
+        <CohereAssistantUI 
+          weatherData={data} 
+          cityName={selectedCityName}
+          coordinates={coordinates}
+        />
       </Grid>
 
     </Grid>
