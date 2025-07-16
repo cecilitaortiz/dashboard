@@ -15,6 +15,7 @@ import {
   Alert
 } from '@mui/material';
 import { Send, Psychology, Warning } from '@mui/icons-material';
+import { callCohere } from '../../functions/Cohere';
 
 interface CohereAssistantUIProps {
   weatherData: any;
@@ -91,18 +92,25 @@ const CohereAssistantUI: React.FC<CohereAssistantUIProps> = ({
     setIsLoading(true);
 
     try {
-      // Aquí integrarías con la API de Cohere
-      // Por ahora, simulamos una respuesta
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const assistantMessage: Message = {
-        id: Date.now() + 1,
-        text: `Basándome en los datos del clima de ${cityName}, te puedo ayudar con información sobre el tiempo. Los datos actuales muestran ${weatherData?.current?.temperature_2m || '--'}°C de temperatura.`,
-        sender: 'assistant',
-        timestamp: new Date()
-      };
+      // Llamar directamente a la función
+      const data = await callCohere({
+        message: userMessage.text,
+        weatherData,
+        cityName
+      });
 
-      setMessages(prev => [...prev, assistantMessage]);
+      if (data.success) {
+        const assistantMessage: Message = {
+          id: Date.now() + 1,
+          text: data.response || 'Sin respuesta',
+          sender: 'assistant',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        throw new Error(data.error || 'Error desconocido');
+      }
+
     } catch (error) {
       console.error('Error al comunicarse con Cohere:', error);
       const errorMessage: Message = {
