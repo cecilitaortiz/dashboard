@@ -10,12 +10,11 @@ import {
   CircularProgress,
   List,
   ListItem,
-  ListItemText,
   Divider,
   Alert
 } from '@mui/material';
 import { Send, Psychology, Warning } from '@mui/icons-material';
-import { callCohere } from '../../functions/Cohere';
+import { callCohere } from '../functions/Cohere';
 
 interface CohereAssistantUIProps {
   weatherData: any;
@@ -176,10 +175,11 @@ const CohereAssistantUI: React.FC<CohereAssistantUIProps> = ({
             flex: 1, 
             overflowY: 'auto', 
             mb: 1,
-            border: '1px solid #e0e0e0',
+            border: (theme) => `1px solid ${theme.palette.divider}`,
             borderRadius: 1,
             p: 1,
-            minHeight: '200px'
+            minHeight: '200px',
+            bgcolor: (theme) => theme.palette.mode === 'dark' ? 'grey.900' : 'grey.50'
           }}
         >
           {messages.length === 0 ? (
@@ -196,11 +196,16 @@ const CohereAssistantUI: React.FC<CohereAssistantUIProps> = ({
                   }}>
                     <Box sx={{
                       maxWidth: '85%',
-                      bgcolor: message.sender === 'user' ? 'primary.main' : 'grey.100',
-                      color: message.sender === 'user' ? 'white' : 'text.primary',
+                      bgcolor: message.sender === 'user' 
+                        ? 'primary.main' 
+                        : (theme) => theme.palette.mode === 'dark' ? 'grey.800' : 'grey.200',
+                      color: message.sender === 'user' 
+                        ? 'primary.contrastText' 
+                        : 'text.primary',
                       borderRadius: 2,
                       px: 1.5,
-                      py: 0.5
+                      py: 0.5,
+                      boxShadow: 1
                     }}>
                       <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
                         {message.text}
